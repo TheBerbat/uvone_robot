@@ -21,4 +21,7 @@
   <include file="$(find uvone_robot_bringup)/launch/mobile_base.launch.xml" />
 
 
+  <include file="$(find uvone_robot_bringup)/launch/scan_filter.launch" />
+
+
 </launch>
