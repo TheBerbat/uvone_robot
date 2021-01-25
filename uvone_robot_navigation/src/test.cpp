@@ -2,9 +2,13 @@
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
 
+#include <fstream> // Para leer el archivo
+std::ifstream infile("/home/rafaelm/Desktop/demofile2.txt");
+
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
 int main(int argc, char** argv){
+  double x, y, theta;
   ros::init(argc, argv, "simple_navigation_goals");
 
   //tell the action client that we want to spin a thread by default
@@ -16,15 +20,15 @@ int main(int argc, char** argv){
   }
 
 
-  //we'll send a goal to the robot to move 1 meter forward
-  for (int i=0; i<5 ; i++) {
-
+  while (infile >> x >> y >> theta)
+  {
+    
     move_base_msgs::MoveBaseGoal goal;
     goal.target_pose.header.frame_id = "map";
     goal.target_pose.header.stamp = ros::Time::now();
 
-    goal.target_pose.pose.position.x = -5.0 + i;
-    goal.target_pose.pose.position.y = -5.0 + i;
+    goal.target_pose.pose.position.x = x;
+    goal.target_pose.pose.position.y = y;
     goal.target_pose.pose.orientation.w =  0.924;
     goal.target_pose.pose.orientation.z = 0.383;
 
