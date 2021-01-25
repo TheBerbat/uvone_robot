@@ -37,3 +37,20 @@ Comprobamos que es capaz de compilar los paquetes de kobuki:
 $ cd ~/kobuki_ws/
 $ catkin_make
 ```
+
+Añadimos el workspace para que ROS sea capaz de encontrarlos, al _.bashrc_:
+```
+$ source ~/kobuki_ws/devel/setup.bash
+```
+
+### Instalacion
+Asumiendo que los prerequisitos se cumplen, comenzamos a instalar este paquete. Se ha creado otro workspace por cuestion de orden, pero puede descargarse en el primer _workspace_ creado.
+```
+$ mkdir -p ~/uvone_ws/src
+$ catkin_make
+$ cd ~/uvone_ws/src/
+$ git clone git@github.com:TheBerbat/uvone_robot.git
+```
+
+## Fotos
+Actualmente el README.md se encuentra en fase de construcción...
