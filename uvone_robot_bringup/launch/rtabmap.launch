@@ -2,7 +2,7 @@
 
   <arg name="database_path"     default="rtabmap.db"/>
   <arg name="rgbd_odometry"     default="false"/>
-  <arg name="rtabmapviz"        default="true"/>
+  <arg name="rtabmapviz"        default="false"/>
   <arg name="localization"      default="false"/>
   <arg name="simulation"        default="true"/>
   <arg name="sw_registered"     default="false"/>
@@ -63,8 +63,10 @@
       <param name="Rtabmap/TimeThr"              type="string" value="0"/>
       <param name="Mem/RehearsalSimilarity"      type="string" value="0.30"/>
       <param name="Reg/Force3DoF"                type="string" value="true"/>
-      <param name="Grid/FromDepth"               type="string" value="false"/>
-      <param name="Grid/CellSize"                              value="0.025" /> 
+      <param name="Grid/FromDepth"               type="string" value="true"/>
+      <param name="Grid/CellSize"                              value="0.075" /> 
+      <param name="Grid/3D"                                    value="true" /> 
+      <param name="Rtabmap/DetectionRate"        type="string" value="0.5"/>
       <param name="grid_size"                    type="double" value="50"/> <!-- 50 meters wide -->
       <param name="GridGlobal/MinSize"           type="string" value="20"/>
 
