@@ -42,5 +42,6 @@
     <remap from="cmd_vel" to="navigation_velocity_smoother/raw_cmd_vel"/>
     <remap from="odom" to="$(arg odom_topic)"/>
     <remap from="scan" to="$(arg laser_topic)"/>
+    <param name="max_vel_trans" value="0.05"/>
   </node>
 </launch>
