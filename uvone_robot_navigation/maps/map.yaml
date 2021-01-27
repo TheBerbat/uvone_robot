@@ -1,4 +1,4 @@
-image: Desktop/maps/map.pgm
+image: map.pgm
 resolution: 0.025000
 origin: [-10.262500, -10.262500, 0.000000]
 negate: 0

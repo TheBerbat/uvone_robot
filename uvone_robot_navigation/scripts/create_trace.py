@@ -1,15 +1,22 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import rospy
 import cv2
 import math
 import yaml
 
+
+rospy.init_node('talker', anonymous=True)
+
 origen = [0, 0, 0]
 grid_size = 0
-path = ''
 #path_yaml = '/home/rafaelm/Desktop/mapa_test.yaml'
-path_yaml = '/home/rafaelm/own_ws/src/uvone_robot/uvone_robot_navigation/maps/octomap_grid.yaml'
-f = open("demofile2.txt", "w") # Archivo donde se guardaran las posiciones objetivo
+#path_yaml = '/home/rafaelm/own_ws/src/uvone_robot/uvone_robot_navigation/maps/octomap_grid.yaml'
+path_yaml = rospy.get_param('~yaml/path', '/home/rafaelm/own_ws/src/uvone_robot/uvone_robot_navigation/maps/')
+file_yaml = rospy.get_param('~yaml/filename', 'octomap_grid.yaml')
+route_path = rospy.get_param('~route/path', 'octomap_grid.yaml')
+route_filename = rospy.get_param('~route/filename', 'octomap_grid.yaml')
+f = open(route_path + route_filename, "w") # Archivo donde se guardaran las posiciones objetivo
+
 
 height = 0
 width = 0
@@ -60,13 +67,12 @@ def on_click(event, x, y, p1, p2):
 
 if __name__ == '__main__':
     
-    f = open("demofile2.txt", "w")
     
     try:
 
         # Obtenemos la informacion del yaml del mapa y lo agregamos a las variables globales.
 
-        with open(path_yaml) as file:
+        with open(path_yaml + file_yaml) as file:
 
             datos = yaml.safe_load(file)
 
@@ -79,7 +85,7 @@ if __name__ == '__main__':
                     grid_size = doc
 
                 if item == 'image':
-                    path = doc
+                    path =  path_yaml + doc
 
 
         # Leemos el archivo del mapa, y medimos algunas propiedades.
