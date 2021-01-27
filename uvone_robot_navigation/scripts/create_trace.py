@@ -85,7 +85,7 @@ if __name__ == '__main__':
                     grid_size = doc
 
                 if item == 'image':
-                    path =  path_yaml + doc
+                    path =  doc
 
 
         # Leemos el archivo del mapa, y medimos algunas propiedades.
