@@ -1,0 +1,2 @@
+- git: {local-name: kobuki, uri: 'https://github.com/yujinrobot/kobuki.git', version: melodic}
+- git: {local-name: kobuki_desktop, uri: 'https://github.com/yujinrobot/kobuki_desktop.git', version: melodic}
