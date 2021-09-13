@@ -1,0 +1,9 @@
+<launch>
+  <include file="$(find ds4_driver)/launch/ds4_driver.launch">
+    <arg name="addr" value="" />
+    <arg name="use_standard_msgs" value="false" />
+  </include>
+  <node pkg="uvone_robot_teleop" type="teleop_ds4" name="uvone_teleop_ds4"  output="screen">
+    <remap from="uvone_teleop_keyboard/cmd_vel" to="cmd_vel_mux/input/teleop"/>
+  </node>
+</launch>
