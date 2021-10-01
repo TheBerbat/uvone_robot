@@ -11,9 +11,9 @@ origen = [0, 0, 0]
 grid_size = 0
 #path_yaml = '/home/rafaelm/Desktop/mapa_test.yaml'
 #path_yaml = '/home/rafaelm/own_ws/src/uvone_robot/uvone_robot_navigation/maps/octomap_grid.yaml'
-path_yaml = rospy.get_param('~yaml/path', '/home/rafaelm/own_ws/src/uvone_robot/uvone_robot_navigation/maps/')
+path_yaml = rospy.get_param('~yaml/path', '/home/rafaelm/catkin_ws/src/uvone_robot/uvone_robot_navigation/maps/')
 file_yaml = rospy.get_param('~yaml/filename', 'octomap_grid.yaml')
-route_path = rospy.get_param('~route/path', 'octomap_grid.yaml')
+route_path = rospy.get_param('~route/path', '/home/rafaelm/catkin_ws/src/uvone_robot/uvone_robot_navigation/path/')
 route_filename = rospy.get_param('~route/filename', 'octomap_grid.yaml')
 f = open(route_path + route_filename, "w") # Archivo donde se guardaran las posiciones objetivo
 
@@ -90,6 +90,7 @@ if __name__ == '__main__':
 
         # Leemos el archivo del mapa, y medimos algunas propiedades.
 
+        print(path)
         img = cv2.imread(path)
         height, width, channels = img.shape
 

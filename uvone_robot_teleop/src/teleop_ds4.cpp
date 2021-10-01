@@ -5,8 +5,8 @@
 #include <algorithm>
 
 ros::Publisher cmd_vel;
-float lin_vel_mult = 0.15;
-float ang_vel_mult = 0.30;
+float lin_vel_mult = 0.25;
+float ang_vel_mult = 0.80;
 
 
 void statusCallback(const ds4_driver::Status::ConstPtr& msg) {
@@ -47,9 +47,9 @@ void statusCallback(const ds4_driver::Status::ConstPtr& msg) {
     }
 
     if(last_ang < target_ang) {
-        last_ang = std::min(target_ang, last_ang + 0.002f);
+        last_ang = std::min(target_ang, last_ang + 0.025f);
     } else if (last_ang > target_ang) {
-        last_ang = std::max(target_ang, last_ang - 0.002f);
+        last_ang = std::max(target_ang, last_ang - 0.025f);
     }
 
     if (msg->button_circle == 1) {
