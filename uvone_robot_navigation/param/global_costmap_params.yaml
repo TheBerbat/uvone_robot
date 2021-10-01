@@ -8,4 +8,5 @@ global_costmap:
    plugins:
      - {name: static_layer,            type: "costmap_2d::StaticLayer"}
      - {name: obstacle_layer,          type: "costmap_2d::VoxelLayer"}
+     - {name: o3d_obstacle_layer,      type: "costmap_2d::VoxelLayer"}
      - {name: inflation_layer_large,         type: "costmap_2d::InflationLayer"}

@@ -66,18 +66,18 @@
       <param name="Mem/RehearsalSimilarity"      type="string" value="0.30"/>
       <param name="Reg/Force3DoF"                type="string" value="true"/>
       <param name="Grid/FromDepth"               type="string" value="true"/>
-      <param name="Grid/CellSize"                              value="0.025" /> 
+      <param name="Grid/CellSize"                              value="0.05" /> 
       <param name="Grid/3D"                                    value="true" /> 
-      <param name="Rtabmap/DetectionRate"        type="string" value="5"/>
+      <param name="Rtabmap/DetectionRate"        type="string" value="10"/>
       <param name="grid_size"                    type="double" value="50"/> <!-- 50 meters wide -->
       <param name="GridGlobal/MinSize"           type="string" value="20"/>
 
 
       <param name="Grid/MaxGroundHeight" type="string" value="0.2"/>
-      <param name="Grid/NormalsSegmentation" type="string" value="false"/>
+      <param name="Grid/NormalsSegmentation" type="string" value="true"/>
       <param name="Grid/MaxObstacleHeight" type="string" value="2"/>
 
-      <param name="Grid/GroundIsObstacle" value="true" />
+      <param name="Grid/GroundIsObstacle" value="false" />
 
 
       
