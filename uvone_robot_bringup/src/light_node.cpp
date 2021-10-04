@@ -91,7 +91,12 @@ struct LightNode_t {
             set_power(0);
             ros::Duration(0.2).sleep();
         }
-        set_inverter(true);
+        for (int i=0; i<5; ++i) {
+            set_inverter(false);
+            ros::Duration(0.07).sleep();
+            set_inverter(true);
+            ros::Duration(0.15).sleep();
+        }
         return true;
     }
     bool callback_disable_light(std_srvs::Empty::Request &req, std_srvs::Empty::ResponseType &res) {
