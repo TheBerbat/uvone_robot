@@ -3,5 +3,8 @@
   <include file="$(find uvone_robot_bringup)/launch/minimal.launch" />
   <include file="$(find uvone_robot_bringup)/launch/3d_sensor.launch" />
   <include file="$(find uvone_robot_bringup)/launch/lidar_sensor.launch" />
+  <include file="$(find uvone_robot_bringup)/launch/usb_cam-test.launch" />
+
+  <node name="uvc_light_node" pkg="uvone_robot_bringup" type="light_node" output="screen"></node>
 
 </launch>

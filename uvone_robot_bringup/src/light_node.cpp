@@ -152,6 +152,9 @@ struct LightNode_t {
 
     void set_inverter(bool value) {
         _inverter_state = value;
+        if (value == 0) {
+            _selected_light = -1;
+        }
         update_inverter();
     }
 

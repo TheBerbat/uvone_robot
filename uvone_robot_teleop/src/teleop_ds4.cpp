@@ -4,9 +4,18 @@
 #include "ds4_driver/Feedback.h"
 #include <algorithm>
 
+#include <std_srvs/Empty.h>
+#include <std_srvs/SetBool.h>
+
 ros::Publisher cmd_vel;
 float lin_vel_mult = 0.25;
 float ang_vel_mult = 0.80;
+
+ros::ServiceClient enable_light;
+ros::ServiceClient disable_light;
+ros::ServiceClient select_light_none;
+ros::ServiceClient select_light_left;
+ros::ServiceClient select_light_right;
 
 
 void statusCallback(const ds4_driver::Status::ConstPtr& msg) {
@@ -58,9 +67,35 @@ void statusCallback(const ds4_driver::Status::ConstPtr& msg) {
     }
 
     msg_send.linear.x = last_lin;
+    if (last_lin<0)
+        msg_send.angular.z = -last_ang;
+    else
     msg_send.angular.z = last_ang;
+   
 
     cmd_vel.publish(msg_send);
+
+    // Ahora tratamos los mensajes de encendido de la lampara
+    if (msg->button_l1 && msg->button_dpad_up) {
+        std_srvs::Empty empty;
+        enable_light.call(empty);
+    }
+    if (msg->button_l1 && msg->button_dpad_down) {
+        std_srvs::Empty empty;
+        disable_light.call(empty);
+    }
+    if (msg->button_l1 && msg->button_dpad_left) {
+        std_srvs::Empty empty;
+        select_light_left.call(empty);
+    }
+    if (msg->button_l1 && msg->button_dpad_right) {
+        std_srvs::Empty empty;
+        select_light_right.call(empty);
+    }
+    if (msg->button_l1 && msg->button_options) {
+        std_srvs::Empty empty;
+        select_light_none.call(empty);
+    }
 }
 
 int main(int argc, char** argv) {
@@ -70,6 +105,12 @@ int main(int argc, char** argv) {
 
     cmd_vel = nh.advertise<geometry_msgs::Twist>("/uvone_teleop_keyboard/cmd_vel", 1000);
     ros::Subscriber ds4_cmd = nh.subscribe("/status", 1000, statusCallback);
+
+    enable_light = nh.serviceClient<std_srvs::Empty>("/enable_light");
+    disable_light = nh.serviceClient<std_srvs::Empty>("/disable_light");
+    select_light_none = nh.serviceClient<std_srvs::Empty>("/select_light_none");
+    select_light_left = nh.serviceClient<std_srvs::Empty>("/select_light_left");
+    select_light_right = nh.serviceClient<std_srvs::Empty>("/select_light_right");
 
     ros::spin();    
 

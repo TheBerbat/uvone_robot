@@ -56,6 +56,7 @@
   <build_depend>tf</build_depend>
   <build_depend>urdf</build_depend>
   <build_depend>xacro</build_depend>
+  <build_depend>kobuki_msgs</build_depend>
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>rviz</build_export_depend>
