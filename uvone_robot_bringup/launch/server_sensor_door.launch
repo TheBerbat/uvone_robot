@@ -1,0 +1,14 @@
+<launch>
+  <arg name="server_port"           default="3333"  doc="Port exposed to connect ESP32 sensors" />
+  <arg name="client_refresh_rate"   default="20.0"  doc="Clients refresh rate between server and ESP32 sensors (1-60)" />
+  <arg name="client_timeout_ms"     default="400"   doc="Maximum time accepted in ms to response ESP32 sensor (0-999)" />
+
+  <env name="ROSCONSOLE_CONFIG_FILE" value="$(find uvone_robot_bringup)/custom_rosconsole.conf"/>
+
+  <node pkg="uvone_robot_bringup" type="sensor_door_server" name="sensor_door_server" output="screen">
+    <param name="server_port" type="int" value="$(arg server_port)" />
+
+    <param name="client/refresh_rate" type="double" value="$(arg client_refresh_rate)" />
+    <param name="client/timeout_ms"   type="double" value="$(arg client_timeout_ms)" />
+  </node>
+</launch>
