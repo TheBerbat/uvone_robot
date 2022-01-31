@@ -15,7 +15,7 @@ class SoundNode_t {
 
 public:
     SoundNode_t(ros::NodeHandle& nh)
-      : sound_topic( nh.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 0, false) )
+      : sound_topic( nh.advertise<kobuki_msgs::Sound>("sound", 0, false) )
       , timer( nh.createTimer(ros::Rate(2), &SoundNode_t::remember_sound, this, false, false) )
     {}
 
@@ -53,9 +53,9 @@ struct Battery_t {
     std::chrono::time_point<std::chrono::system_clock> last_sound_call_;
 
     Battery_t(ros::NodeHandle& nh)
-        : _voltage_sensor ( nh.subscribe("/mobile_base/sensors/core", 1, &Battery_t::callback, this) )
+        : _voltage_sensor ( nh.subscribe("input_sensor", 1, &Battery_t::callback, this) )
         , sound_ ( nh )
-        , _led2 ( nh.advertise<kobuki_msgs::Led>("/mobile_base/commands/led2", 0, false) )
+        , _led2 ( nh.advertise<kobuki_msgs::Led>("led", 0, false) )
         , last_sound_call_ ( std::chrono::system_clock::now() )
     {}
 

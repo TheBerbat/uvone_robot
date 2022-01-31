@@ -1,6 +1,12 @@
 <launch>
   <node pkg="uvone_robot_bringup" type="light_node" name="light_node" output="screen" >
-    <param name="test" type="double" value="10.0" />
+    <remap from="sound" to="/mobile_base/commands/sound"/>
+    <remap from="digital_output" to="/mobile_base/commands/digital_output" />
+    <remap from="cmd_light" to="/mobile_base/commands/light" />
   </node>
-  <node pkg="uvone_robot_bringup" type="light_battery_node" name="light_battery_node" output="screen" ></node>
+  <node pkg="uvone_robot_bringup" type="light_battery_node" name="light_battery_node" output="screen" >
+    <remap from="sound" to="/mobile_base/commands/sound"/>
+    <remap from="input_sensor" to="/mobile_base/sensors/core"/>
+    <remap from="led" to="/mobile_base/commands/led2" />
+  </node>
 </launch>

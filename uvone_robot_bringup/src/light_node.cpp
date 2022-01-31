@@ -12,7 +12,7 @@ class DigitalNode_t
     ros::Publisher digital_topic;
 public:
     DigitalNode_t(ros::NodeHandle& nh)
-    :   digital_topic(nh.advertise<kobuki_msgs::DigitalOutput>("/mobile_base/commands/digital_output", 0, true))
+    :   digital_topic(nh.advertise<kobuki_msgs::DigitalOutput>("digital_output", 0, true))
     {}
 
     template <int DigitalOutput>
@@ -132,7 +132,7 @@ class SoundNode_t {
 
 public:
     SoundNode_t(ros::NodeHandle& nh)
-      : sound_topic( nh.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 0, false) )
+      : sound_topic( nh.advertise<kobuki_msgs::Sound>("sound", 0, false) )
       , timer( nh.createTimer(ros::Rate(2), &SoundNode_t::remember_sound, this, false, false) )
     {}
 
