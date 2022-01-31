@@ -55,6 +55,7 @@ add_message_files(
   FILES
   DoorStatus.msg
   MultipleDoorStatus.msg
+  LightCmd.msg
 )
 
 ## Generate services in the 'srv' folder
