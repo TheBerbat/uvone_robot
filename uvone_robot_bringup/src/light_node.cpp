@@ -1,15 +1,11 @@
 #include <ros/ros.h>
+
 #include <kobuki_msgs/DigitalOutput.h>
 #include <kobuki_msgs/SensorState.h>
 #include <kobuki_msgs/Sound.h>
 #include <kobuki_msgs/Led.h>
 
-#include <std_srvs/Empty.h>
-#include <std_srvs/SetBool.h>
-
-#include "uvone_robot_bringup/LightCmd.h"
-
-#include <csignal>
+#include <uvone_robot_bringup/LightCmd.h>
 
 class DigitalNode_t
 {
@@ -164,7 +160,6 @@ public:
     }
 
     void silent() { timer.stop(); }
-
 };
 
 struct LightNode_t {
@@ -172,30 +167,11 @@ struct LightNode_t {
     SoundNode_t sounds;
     ros::Subscriber cmds;
 
-
-    ros::ServiceServer _select_light_r;
-    ros::ServiceServer _select_light_l;
-    ros::ServiceServer _power_off;
-    ros::ServiceServer _enable_light;
-    ros::ServiceServer _disable_light;
-    ros::Subscriber _voltage_sensor;
-    ros::Publisher _led2;
-
     LightNode_t(ros::NodeHandle& nh)
       : lamp_node( nh )
       , sounds( nh )
       , cmds( nh.subscribe("cmd_light", 10, &LightNode_t::callback, this) )
-    {
-        _select_light_r = nh.advertiseService("/select_light_right", &LightNode_t::callback_select_light_right, this);
-        _select_light_l = nh.advertiseService("/select_light_left", &LightNode_t::callback_select_light_left, this);
-        _power_off = nh.advertiseService("/select_light_none", &LightNode_t::callback_select_light_none, this);
-        _enable_light = nh.advertiseService("/enable_light", &LightNode_t::callback_enable_light, this);
-        _disable_light = nh.advertiseService("/disable_light", &LightNode_t::callback_disable_light, this);
-        _voltage_sensor = nh.subscribe("/mobile_base/sensors/core", 1, &LightNode_t::get_analog_data, this);
-        _led2 = nh.advertise<kobuki_msgs::Led>("/mobile_base/commands/led2", 0, false);
-
-        //_sound_timer.stop();
-    }
+    {}
 
     void callback(const uvone_robot_bringup::LightCmd::ConstPtr& msg)
     {
@@ -216,79 +192,18 @@ struct LightNode_t {
                 lamp_node.set_lamp(LampNode_t::SelectorLamp::RIGHT_LAMP);
                 break;
             default:
-                ROS_ERROR("Selected lamp with id: %d. Should be 0..2.", msg->lamp_selected);
+                ROS_WARN("Selected lamp with id: %d. Should be 0..2.", msg->lamp_selected);
         }
     }
-
-    void get_analog_data(const kobuki_msgs::SensorStateConstPtr& msg) {
-        static float avg_voltage {float(msg->analog_input[0])/float(1<<12)*3.3f*5.7f};
-        constexpr int N {10};
-        float voltage = float(msg->analog_input[0])/float(1<<12)*3.3f*5.7f;
-        avg_voltage -= avg_voltage/N;
-        avg_voltage += voltage/N;
-        ROS_DEBUG("Voltaje de la bateria: %.2f V", avg_voltage);
-
-        kobuki_msgs::Led led_msg;
-
-        if (avg_voltage > 16.0f || avg_voltage < 12.0f) {
-            ROS_WARN("Voltaje de la bateria: %.2f V", avg_voltage);
-            led_msg.value = led_msg.RED;
-        } else if (avg_voltage < 14.0f) {
-            ROS_WARN("Voltaje de la bateria: %.2f V", avg_voltage);
-            led_msg.value = led_msg.ORANGE;
-        } else {
-            led_msg.value = led_msg.GREEN;
-        }
-
-        _led2.publish(led_msg);
-    }
-
-    bool callback_select_light_right(std_srvs::Empty::Request &req, std_srvs::Empty::ResponseType &res) {
-        sounds.set_sound(1);
-        sounds.set_period(2000);
-        lamp_node.set_lamp(LampNode_t::SelectorLamp::LEFT_LAMP);
-        return true;
-    }
-
-    bool callback_select_light_left(std_srvs::Empty::Request &req, std_srvs::Empty::ResponseType &res) {
-        sounds.set_sound(1);
-        sounds.set_period(2000);
-        lamp_node.set_lamp(LampNode_t::SelectorLamp::RIGHT_LAMP);
-        return true;
-    }
-
-    bool callback_select_light_none(std_srvs::Empty::Request &req, std_srvs::Empty::ResponseType &res) {
-        sounds.set_sound(3);
-        sounds.set_period(500);
-        lamp_node.set_lamp(LampNode_t::SelectorLamp::NONE);
-        return true;
-    }
-
-    bool callback_enable_light(std_srvs::Empty::Request &req, std_srvs::Empty::ResponseType &res) {
-        sounds.send(0);
-        sounds.set_sound(3);
-        sounds.set_period(500);
-
-        lamp_node.set_inverter(LampNode_t::StateInverter::ENABLE);
-        return true;
-    }
-
-    bool callback_disable_light(std_srvs::Empty::Request &req, std_srvs::Empty::ResponseType &res) {
-        sounds.send(1);
-        sounds.silent();
-        lamp_node.set_inverter(LampNode_t::StateInverter::DISABLE);
-        return true;
-    }
-
 };
 
 int main(int argc, char** argv) {
-    ros::init(argc, argv, "light_node");
+    ros::init(argc, argv, "light_cmd_node");
     ros::NodeHandle nh;
 
-    ROS_INFO("OK");
-
     LightNode_t light(nh);
+
+    ROS_INFO("Node ready.");
 
     ros::spin();
 }
