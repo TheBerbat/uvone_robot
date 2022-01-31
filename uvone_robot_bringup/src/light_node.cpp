@@ -7,6 +7,8 @@
 #include <std_srvs/Empty.h>
 #include <std_srvs/SetBool.h>
 
+#include "uvone_robot_bringup/LightCmd.h"
+
 #include <csignal>
 
 class DigitalNode_t
@@ -82,7 +84,7 @@ public:
         if(selected_lamp == l)
             return;
 
-        set_ballast(StateBallast::DISABLE);
+        StateBallast tmp { set_ballast(StateBallast::DISABLE) };
 
         if (l == SelectorLamp::NONE)
             return;
@@ -91,13 +93,14 @@ public:
         digital_node.send<static_cast<int>(SelectorFunction::LAMP_SELECTOR)>(static_cast<bool>(l));
         ros::Duration(0.1).sleep();
         
-        set_ballast(StateBallast::ENABLE);
+        set_ballast(tmp);
     }
 
-    void set_inverter(StateInverter state)
+    StateInverter set_inverter(StateInverter state)
     {
+        const StateInverter last {state_inverter};
         if (state_inverter == state)
-            return;
+            return last;
         
         if (state == StateInverter::DISABLE)
             set_ballast(StateBallast::DISABLE);
@@ -105,12 +108,16 @@ public:
         digital_node.send<static_cast<int>(SelectorFunction::DIGITAL_INVERTER)>(static_cast<bool>(state));
         state_inverter = state;
         ros::Duration(0.25).sleep();
+        if (state == StateInverter::ENABLE && selected_lamp != SelectorLamp::NONE)
+            set_ballast(StateBallast::ENABLE);
+        return last;
     }
 
-    void set_ballast(StateBallast state)
+    StateBallast set_ballast(StateBallast state)
     {
+        const StateBallast last {state_ballast};
         if (state_ballast == state)
-            return;
+            return last;
 
         if (state == StateBallast::ENABLE)
             set_inverter(StateInverter::ENABLE);
@@ -118,6 +125,7 @@ public:
         digital_node.send<static_cast<int>(SelectorFunction::DIGITAL_BALLAST)>(static_cast<bool>(state));
         state_ballast = state;
         ros::Duration(0.25).sleep();
+        return last;
     }
 };
 
@@ -164,6 +172,7 @@ public:
 struct LightNode_t {
     LampNode_t lamp_node;
     SoundNode_t sounds;
+    ros::Subscriber cmds;
 
 
     ros::ServiceServer _select_light_r;
@@ -177,6 +186,7 @@ struct LightNode_t {
     LightNode_t(ros::NodeHandle& nh)
       : lamp_node( nh )
       , sounds( nh )
+      , cmds( nh.subscribe("cmd_light", 10, &LightNode_t::callback, this) )
     {
         _select_light_r = nh.advertiseService("/select_light_right", &LightNode_t::callback_select_light_right, this);
         _select_light_l = nh.advertiseService("/select_light_left", &LightNode_t::callback_select_light_left, this);
@@ -187,6 +197,29 @@ struct LightNode_t {
         _led2 = nh.advertise<kobuki_msgs::Led>("/mobile_base/commands/led2", 0, false);
 
         //_sound_timer.stop();
+    }
+
+    void callback(const uvone_robot_bringup::LightCmd::ConstPtr& msg)
+    {
+        if (msg->inverter != 0)
+            lamp_node.set_inverter(LampNode_t::StateInverter::ENABLE);
+        else
+            lamp_node.set_inverter(LampNode_t::StateInverter::DISABLE);
+
+        switch (msg->lamp_selected)
+        {
+            case uvone_robot_bringup::LightCmd::SELECT_NONE_LAMP:
+                lamp_node.set_lamp(LampNode_t::SelectorLamp::NONE);
+                break;
+            case uvone_robot_bringup::LightCmd::SELECT_LEFT_LAMP:
+                lamp_node.set_lamp(LampNode_t::SelectorLamp::LEFT_LAMP);
+                break;
+            case uvone_robot_bringup::LightCmd::SELECT_RIGHT_LAMP:
+                lamp_node.set_lamp(LampNode_t::SelectorLamp::RIGHT_LAMP);
+                break;
+            default:
+                ROS_ERROR("Selected lamp with id: %d. Should be 0..2.", msg->lamp_selected);
+        }
     }
 
     void get_analog_data(const kobuki_msgs::SensorStateConstPtr& msg) {

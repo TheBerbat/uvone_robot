@@ -1,5 +1,5 @@
 Header header
-bool inversor
+bool inverter
 uint8 lamp_selected
 
 uint8 SELECT_NONE_LAMP=0
