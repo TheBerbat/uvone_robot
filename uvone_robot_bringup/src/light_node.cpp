@@ -193,7 +193,24 @@ struct LightNode_t {
                 break;
             default:
                 ROS_WARN("Selected lamp with id: %d. Should be 0..2.", msg->lamp_selected);
+                return;
         }
+
+        if(msg->inverter)
+        {
+            if ( lamp_node.selected_lamp == LampNode_t::SelectorLamp::NONE )
+            {
+                sounds.set_period(1000);
+                sounds.set_sound(3);
+            }
+            else
+            {
+                sounds.set_period(2000);
+                sounds.set_sound(6);
+            }
+        }
+        else
+            sounds.silent();
     }
 };
 
