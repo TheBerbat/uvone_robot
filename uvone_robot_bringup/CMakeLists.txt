@@ -137,6 +137,9 @@ include_directories(
 add_executable(light_node src/light_node.cpp)
 target_link_libraries(light_node ${catkin_LIBRARIES})
 
+add_executable(light_battery_node src/light_battery_node.cpp)
+target_link_libraries(light_battery_node ${catkin_LIBRARIES})
+
 add_executable(
   sensor_door_server 
   src/sensor_door/main.cpp 
