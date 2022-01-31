@@ -84,23 +84,24 @@ public:
         if(selected_lamp == l)
             return;
 
-        StateBallast tmp { set_ballast(StateBallast::DISABLE) };
+        set_ballast(StateBallast::DISABLE);
 
+        selected_lamp = l;
+        
         if (l == SelectorLamp::NONE)
             return;
 
-        selected_lamp = l;
         digital_node.send<static_cast<int>(SelectorFunction::LAMP_SELECTOR)>(static_cast<bool>(l));
         ros::Duration(0.1).sleep();
         
-        set_ballast(tmp);
+        if (state_inverter == StateInverter::ENABLE && l != SelectorLamp::NONE)
+            set_ballast(StateBallast::ENABLE);
     }
 
-    StateInverter set_inverter(StateInverter state)
+    void set_inverter(StateInverter state)
     {
-        const StateInverter last {state_inverter};
         if (state_inverter == state)
-            return last;
+            return;
         
         if (state == StateInverter::DISABLE)
             set_ballast(StateBallast::DISABLE);
@@ -110,14 +111,12 @@ public:
         ros::Duration(0.25).sleep();
         if (state == StateInverter::ENABLE && selected_lamp != SelectorLamp::NONE)
             set_ballast(StateBallast::ENABLE);
-        return last;
     }
 
-    StateBallast set_ballast(StateBallast state)
+    void set_ballast(StateBallast state)
     {
-        const StateBallast last {state_ballast};
         if (state_ballast == state)
-            return last;
+            return;
 
         if (state == StateBallast::ENABLE)
             set_inverter(StateInverter::ENABLE);
@@ -125,7 +124,6 @@ public:
         digital_node.send<static_cast<int>(SelectorFunction::DIGITAL_BALLAST)>(static_cast<bool>(state));
         state_ballast = state;
         ros::Duration(0.25).sleep();
-        return last;
     }
 };
 
