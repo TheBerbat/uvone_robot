@@ -1,1 +1,3 @@
 .vscode/
+/uvone_robot_navigation/maps/*
+/uvone_robot_navigation/paths/*
