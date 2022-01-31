@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="uvone_robot_bringup" type="light_node" name="light_node" output="screen" >
+    <param name="test" type="double" value="10.0" />
+  </node>
+  <node pkg="uvone_robot_bringup" type="light_battery_node" name="light_battery_node" output="screen" ></node>
+</launch>

@@ -73,7 +73,7 @@ struct Battery_t {
             sound_.send(kobuki_msgs::Sound::RECHARGE);
         }
         
-        ROS_INFO("Voltaje de la bateria: %.2f V", avg_voltage);
+        ROS_DEBUG("Voltaje de la bateria: %.2f V", avg_voltage);
     }
 
     static float time_between_sound(float voltage)
@@ -109,7 +109,7 @@ int main(int argc, char** argv)
 
     Battery_t light(nh);
 
-    ROS_INFO("Node ready.");
+    ROS_INFO("Node to measure batteries ready.");
 
     ros::spin();
 }

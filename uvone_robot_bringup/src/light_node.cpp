@@ -203,7 +203,7 @@ int main(int argc, char** argv) {
 
     LightNode_t light(nh);
 
-    ROS_INFO("Node ready.");
+    ROS_INFO("Node to control lights ready.");
 
     ros::spin();
 }
