@@ -51,6 +51,7 @@ struct Battery_t {
     ros::Publisher _led2;
 
     std::chrono::time_point<std::chrono::system_clock> last_sound_call_;
+    bool last_call_ { false };
 
     Battery_t(ros::NodeHandle& nh)
         : _voltage_sensor ( nh.subscribe("input_sensor", 1, &Battery_t::callback, this) )
@@ -72,8 +73,20 @@ struct Battery_t {
             last_sound_call_ = now;
             sound_.send(kobuki_msgs::Sound::RECHARGE);
         }
+
+        if ( avg_voltage < 10.0f && !last_call_ )
+        {
+            last_call_ = true;
+            sound_.send(kobuki_msgs::Sound::OFF);
+        }
+        else if (avg_voltage > 11.0f && last_call_ )
+        {
+            last_call_ = false;
+            sound_.send(kobuki_msgs::Sound::ON);
+        }
         
         ROS_DEBUG("Voltaje de la bateria: %.2f V", avg_voltage);
+        update_color(avg_voltage);
     }
 
     static float time_between_sound(float voltage)
