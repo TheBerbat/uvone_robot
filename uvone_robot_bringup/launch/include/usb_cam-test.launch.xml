@@ -1,6 +1,6 @@
 <launch>
-  <arg name="video_front" default="/dev/video6" /> 
-  <arg name="video_back" default="/dev/video4" />
+  <arg name="video_front" default="/dev/video4" /> 
+  <arg name="video_back" default="/dev/video6" />
 
   <group ns="eyefish_cameras">
     <node name="usb_cam_front" pkg="usb_cam" type="usb_cam_node" output="screen" >
