@@ -30,6 +30,7 @@
 import rospy
 
 from geometry_msgs.msg import Twist
+from uvone_robot_bringup.msg import LightCmd
 
 import sys, select, termios, tty
 
@@ -45,6 +46,12 @@ w/x : increase/decrease only linear speed by 10%
 e/c : increase/decrease only angular speed by 10%
 space key, k : force stop
 anything else : stop smoothly
+---------------------------
+Select light lamp:
+    r  t  y
+       g
+r/y : select left/right lamp
+t/g : turn on/off the inverter
 CTRL-C to quit
 """
 
@@ -85,11 +92,50 @@ turn = 1
 def vels(speed,turn):
     return "currently:\tspeed %s\tturn %s " % (speed,turn)
 
+last_lamp = LightCmd().SELECT_NONE_LAMP
+last_inverter = False
+def proccessLamps(pub, key):
+    global last_lamp, last_inverter
+
+    light = LightCmd()
+    if key == 'r':
+        print("Selected left lamp (inverter: " + str(last_inverter) + ")")
+        light.lamp_selected = light.SELECT_LEFT_LAMP
+        light.inverter = last_inverter
+    elif key == 'y':
+        print("Selected right lamp (inverter: " + str(last_inverter) + ")")
+        light.lamp_selected = light.SELECT_RIGHT_LAMP
+        light.inverter = last_inverter
+    elif key == 't':
+        if last_inverter == True:
+            light.lamp_selected = light.SELECT_NONE_LAMP
+            print("Selected none lamp")
+        else:
+            light.lamp_selected = last_lamp
+        if last_lamp == light.SELECT_NONE_LAMP:
+            print("Turn on inverter")
+        else:
+            print("Turn on inverter (Restoring last lamp selected)")
+        
+        light.inverter = True
+    elif key == 'g':
+        print("Turn off inverter")
+        light.lamp_selected = last_lamp
+        light.inverter = False
+    else:
+        return
+    last_lamp = light.lamp_selected
+    last_inverter = light.inverter
+    light.header.stamp = rospy.Time.now()
+    pub.publish(light)
+
+
 if __name__=="__main__":
     settings = termios.tcgetattr(sys.stdin)
     
     rospy.init_node('uvone_teleop')
     pub = rospy.Publisher('~cmd_vel', Twist, queue_size=5)
+    pub_light = rospy.Publisher('~cmd_light', LightCmd, queue_size=5)
 
     x = 0
     th = 0
@@ -153,6 +199,8 @@ if __name__=="__main__":
             twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = control_turn
             pub.publish(twist)
 
+            proccessLamps(pub_light, key)
+
             #print("loop: {0}".format(count))
             #print("target: vx: {0}, wz: {1}".format(target_speed, target_turn))
             #print("publihsed: vx: {0}, wz: {1}".format(twist.linear.x, twist.angular.z))
@@ -166,4 +214,11 @@ if __name__=="__main__":
         twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0
         pub.publish(twist)
 
+        light = LightCmd()
+        light.header.stamp = rospy.Time.now()
+        light.inverter = False
+        light.lamp_selected = light.SELECT_NONE_LAMP
+        pub_light.publish(light)
+
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
+    

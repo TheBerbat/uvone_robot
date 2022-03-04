@@ -40,8 +40,8 @@ public:
     };
 
     enum class SelectorLamp {
-        LEFT_LAMP  = false,
-        RIGHT_LAMP = true,
+        RIGHT_LAMP  = false,
+        LEFT_LAMP = true,
         NONE
     };
 

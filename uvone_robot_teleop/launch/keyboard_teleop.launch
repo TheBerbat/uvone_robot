@@ -3,5 +3,6 @@
     <param name="scale_linear" value="0.5" type="double"/>
     <param name="scale_angular" value="1.5" type="double"/>
     <remap from="uvone_teleop_keyboard/cmd_vel" to="cmd_vel_mux/input/teleop"/>
+    <remap from="uvone_teleop_keyboard/cmd_light" to="mobile_base/commands/light"/>
   </node>
 </launch>
