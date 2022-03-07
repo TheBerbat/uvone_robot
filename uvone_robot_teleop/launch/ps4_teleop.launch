@@ -5,5 +5,6 @@
   </include>
   <node pkg="uvone_robot_teleop" type="teleop_ds4" name="uvone_teleop_ds4"  output="screen">
     <remap from="uvone_teleop_keyboard/cmd_vel" to="cmd_vel_mux/input/teleop"/>
+    <remap from="uvone_teleop_keyboard/cmd_light" to="/mobile_base/commands/light"/>
   </node>
 </launch>

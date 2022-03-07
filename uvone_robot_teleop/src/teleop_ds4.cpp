@@ -2,21 +2,17 @@
 #include "geometry_msgs/Twist.h"
 #include "ds4_driver/Status.h"
 #include "ds4_driver/Feedback.h"
+#include "uvone_robot_bringup/LightCmd.h"
 #include <algorithm>
 
 #include <std_srvs/Empty.h>
 #include <std_srvs/SetBool.h>
 
 ros::Publisher cmd_vel;
-float lin_vel_mult = 0.25;
-float ang_vel_mult = 0.80;
+float lin_vel_mult = 0.50;
+float ang_vel_mult = 1.10;
 
-ros::ServiceClient enable_light;
-ros::ServiceClient disable_light;
-ros::ServiceClient select_light_none;
-ros::ServiceClient select_light_left;
-ros::ServiceClient select_light_right;
-
+ros::Publisher cmd_light;
 
 void statusCallback(const ds4_driver::Status::ConstPtr& msg) {
     static int last_button_dpad_up = 0;
@@ -75,26 +71,30 @@ void statusCallback(const ds4_driver::Status::ConstPtr& msg) {
 
     cmd_vel.publish(msg_send);
 
-    // Ahora tratamos los mensajes de encendido de la lampara
-    if (msg->button_l1 && msg->button_dpad_up) {
-        std_srvs::Empty empty;
-        enable_light.call(empty);
-    }
-    if (msg->button_l1 && msg->button_dpad_down) {
-        std_srvs::Empty empty;
-        disable_light.call(empty);
-    }
-    if (msg->button_l1 && msg->button_dpad_left) {
-        std_srvs::Empty empty;
-        select_light_left.call(empty);
-    }
-    if (msg->button_l1 && msg->button_dpad_right) {
-        std_srvs::Empty empty;
-        select_light_right.call(empty);
-    }
-    if (msg->button_l1 && msg->button_options) {
-        std_srvs::Empty empty;
-        select_light_none.call(empty);
+    if (msg->button_l1) {
+        static bool last_inverter = false;
+        static uint8_t last_light = uvone_robot_bringup::LightCmd::SELECT_NONE_LAMP;
+        uvone_robot_bringup::LightCmd msg_light;
+        // Ahora tratamos los mensajes de encendido de la lampara
+        if (msg->button_dpad_up) {
+            last_inverter = true;
+        }
+        if (msg->button_dpad_down) {
+            last_inverter = false;
+        }
+        if (msg->button_dpad_left) {
+            last_light = uvone_robot_bringup::LightCmd::SELECT_LEFT_LAMP;
+        }
+        if (msg->button_dpad_right) {
+            last_light = uvone_robot_bringup::LightCmd::SELECT_RIGHT_LAMP;
+        }
+        if (msg->button_options) {
+            last_light = uvone_robot_bringup::LightCmd::SELECT_NONE_LAMP;
+        }
+        msg_light.inverter = last_inverter;
+        msg_light.lamp_selected = last_light;
+
+        cmd_light.publish(msg_light);
     }
 }
 
@@ -104,13 +104,8 @@ int main(int argc, char** argv) {
     ros::NodeHandle nh;
 
     cmd_vel = nh.advertise<geometry_msgs::Twist>("/uvone_teleop_keyboard/cmd_vel", 1000);
+    cmd_light = nh.advertise<uvone_robot_bringup::LightCmd>("/uvone_teleop_keyboard/cmd_light", 100);
     ros::Subscriber ds4_cmd = nh.subscribe("/status", 1000, statusCallback);
-
-    enable_light = nh.serviceClient<std_srvs::Empty>("/enable_light");
-    disable_light = nh.serviceClient<std_srvs::Empty>("/disable_light");
-    select_light_none = nh.serviceClient<std_srvs::Empty>("/select_light_none");
-    select_light_left = nh.serviceClient<std_srvs::Empty>("/select_light_left");
-    select_light_right = nh.serviceClient<std_srvs::Empty>("/select_light_right");
 
     ros::spin();    
 
