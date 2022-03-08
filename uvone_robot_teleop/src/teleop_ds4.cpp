@@ -2,7 +2,7 @@
 #include "geometry_msgs/Twist.h"
 #include "ds4_driver/Status.h"
 #include "ds4_driver/Feedback.h"
-#include "uvone_robot_bringup/LightCmd.h"
+#include "uvone_robot_msgs/LightCmd.h"
 #include <algorithm>
 
 #include <std_srvs/Empty.h>
@@ -73,8 +73,8 @@ void statusCallback(const ds4_driver::Status::ConstPtr& msg) {
 
     if (msg->button_l1) {
         static bool last_inverter = false;
-        static uint8_t last_light = uvone_robot_bringup::LightCmd::SELECT_NONE_LAMP;
-        uvone_robot_bringup::LightCmd msg_light;
+        static uint8_t last_light = uvone_robot_msgs::LightCmd::SELECT_NONE_LAMP;
+        uvone_robot_msgs::LightCmd msg_light;
         // Ahora tratamos los mensajes de encendido de la lampara
         if (msg->button_dpad_up) {
             last_inverter = true;
@@ -83,13 +83,13 @@ void statusCallback(const ds4_driver::Status::ConstPtr& msg) {
             last_inverter = false;
         }
         if (msg->button_dpad_left) {
-            last_light = uvone_robot_bringup::LightCmd::SELECT_LEFT_LAMP;
+            last_light = uvone_robot_msgs::LightCmd::SELECT_LEFT_LAMP;
         }
         if (msg->button_dpad_right) {
-            last_light = uvone_robot_bringup::LightCmd::SELECT_RIGHT_LAMP;
+            last_light = uvone_robot_msgs::LightCmd::SELECT_RIGHT_LAMP;
         }
         if (msg->button_options) {
-            last_light = uvone_robot_bringup::LightCmd::SELECT_NONE_LAMP;
+            last_light = uvone_robot_msgs::LightCmd::SELECT_NONE_LAMP;
         }
         msg_light.inverter = last_inverter;
         msg_light.lamp_selected = last_light;
@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
     ros::NodeHandle nh;
 
     cmd_vel = nh.advertise<geometry_msgs::Twist>("/uvone_teleop_keyboard/cmd_vel", 1000);
-    cmd_light = nh.advertise<uvone_robot_bringup::LightCmd>("/uvone_teleop_keyboard/cmd_light", 100);
+    cmd_light = nh.advertise<uvone_robot_msgs::LightCmd>("/uvone_teleop_keyboard/cmd_light", 100);
     ros::Subscriber ds4_cmd = nh.subscribe("/status", 1000, statusCallback);
 
     ros::spin();    

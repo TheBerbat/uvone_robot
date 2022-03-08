@@ -135,9 +135,11 @@ include_directories(
 
 add_executable(light_node src/light_node.cpp)
 target_link_libraries(light_node ${catkin_LIBRARIES})
+add_dependencies(light_node ${catkin_EXPORTED_TARGETS})
 
 add_executable(light_battery_node src/light_battery_node.cpp)
 target_link_libraries(light_battery_node ${catkin_LIBRARIES})
+add_dependencies(light_battery_node ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
