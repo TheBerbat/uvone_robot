@@ -1,4 +1,0 @@
----
-bool success
-int32 num_remaining_devices
-int32 num_disconnected_devices

@@ -1,4 +1,0 @@
-string door_id
-bool last_response_successfull
-bool connected
-bool door_status

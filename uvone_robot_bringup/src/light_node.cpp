@@ -5,7 +5,7 @@
 #include <kobuki_msgs/Sound.h>
 #include <kobuki_msgs/Led.h>
 
-#include <uvone_robot_bringup/LightCmd.h>
+#include <uvone_robot_msgs/LightCmd.h>
 
 class DigitalNode_t
 {
@@ -173,7 +173,7 @@ struct LightNode_t {
       , cmds( nh.subscribe("cmd_light", 10, &LightNode_t::callback, this) )
     {}
 
-    void callback(const uvone_robot_bringup::LightCmd::ConstPtr& msg)
+    void callback(const uvone_robot_msgs::LightCmd::ConstPtr& msg)
     {
         if (msg->inverter != 0)
             lamp_node.set_inverter(LampNode_t::StateInverter::ENABLE);
@@ -182,13 +182,13 @@ struct LightNode_t {
 
         switch (msg->lamp_selected)
         {
-            case uvone_robot_bringup::LightCmd::SELECT_NONE_LAMP:
+            case uvone_robot_msgs::LightCmd::SELECT_NONE_LAMP:
                 lamp_node.set_lamp(LampNode_t::SelectorLamp::NONE);
                 break;
-            case uvone_robot_bringup::LightCmd::SELECT_LEFT_LAMP:
+            case uvone_robot_msgs::LightCmd::SELECT_LEFT_LAMP:
                 lamp_node.set_lamp(LampNode_t::SelectorLamp::LEFT_LAMP);
                 break;
-            case uvone_robot_bringup::LightCmd::SELECT_RIGHT_LAMP:
+            case uvone_robot_msgs::LightCmd::SELECT_RIGHT_LAMP:
                 lamp_node.set_lamp(LampNode_t::SelectorLamp::RIGHT_LAMP);
                 break;
             default:

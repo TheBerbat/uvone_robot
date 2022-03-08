@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   urdf
   xacro
+  uvone_robot_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -51,18 +52,16 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-  FILES
-  DoorStatus.msg
-  MultipleDoorStatus.msg
-  LightCmd.msg
-)
+#add_message_files(
+#  FILES
+#  LightCmd.msg
+#)
 
 ## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  CleanDisconnectedDevices.srv
-)
+#add_service_files(
+#  FILES
+#  Service1.srv
+#)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -72,10 +71,10 @@ add_service_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-)
+#generate_messages(
+#  DEPENDENCIES
+#  std_msgs
+#)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -139,16 +138,6 @@ target_link_libraries(light_node ${catkin_LIBRARIES})
 
 add_executable(light_battery_node src/light_battery_node.cpp)
 target_link_libraries(light_battery_node ${catkin_LIBRARIES})
-
-add_executable(
-  sensor_door_server 
-  src/sensor_door/main.cpp 
-  src/sensor_door/server.cpp
-  src/sensor_door/client.cpp
-  src/sensor_door/cluster.cpp
-)
-target_link_libraries(sensor_door_server ${catkin_LIBRARIES})
-add_dependencies(sensor_door_server ${PROJECT_NAME}_gencpp)
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
