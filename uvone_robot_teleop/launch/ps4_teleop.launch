@@ -1,10 +1,20 @@
 <launch>
-  <include file="$(find ds4_driver)/launch/ds4_driver.launch">
-    <arg name="addr" value="" />
-    <arg name="use_standard_msgs" value="false" />
-  </include>
+  <arg name="addr" default="" />
+  <arg name="use_standard_msgs" default="false" />
+  <arg name="autorepeat_rate" default="0" if="$(arg use_standard_msgs)" />
+
+  <node pkg="ds4_driver" type="ds4_driver_node.py" name="ds4_driver" output="screen" >
+    <rosparam command="load" file="$(find ds4_driver)/config/params.yaml" />
+
+    <param name="device_addr" value="$(arg addr)" />
+    <param name="use_standard_msgs" value="$(arg use_standard_msgs)" />
+    <param name="autorepeat_rate" value="$(arg autorepeat_rate)" if="$(arg use_standard_msgs)" />
+
+    <remap from="status" to="/uvone_teleop_ds4/status" />
+  </node>
+
   <node pkg="uvone_robot_teleop" type="teleop_ds4" name="uvone_teleop_ds4"  output="screen">
-    <remap from="uvone_teleop_keyboard/cmd_vel" to="cmd_vel_mux/input/teleop"/>
-    <remap from="uvone_teleop_keyboard/cmd_light" to="/mobile_base/commands/light"/>
+    <remap from="~cmd_vel" to="/cmd_vel_mux/input/teleop"/>
+    <remap from="~cmd_light" to="/mobile_base/commands/light"/>
   </node>
 </launch>
