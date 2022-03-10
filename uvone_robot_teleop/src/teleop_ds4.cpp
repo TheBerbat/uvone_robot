@@ -3,18 +3,65 @@
 #include "ds4_driver/Status.h"
 #include "ds4_driver/Feedback.h"
 #include "uvone_robot_msgs/LightCmd.h"
-#include <algorithm>
+
+#include <chrono>
+
+struct Smooth {
+    std::chrono::steady_clock::time_point last_time;
+    double last_value {};
+
+    const double acc {};
+
+    explicit Smooth(double acc)
+      : acc {acc}
+    {}
+
+    double call(double new_value)
+    {
+        std::chrono::steady_clock::time_point now { std::chrono::steady_clock::now() };
+        const int64_t diff_us { std::chrono::duration_cast<std::chrono::microseconds>(now - last_time).count() };
+
+        if (new_value>last_value)
+        {
+            last_value += acc*static_cast<double>(diff_us)/1000000.0f ;
+            last_value = last_value > new_value ? new_value : last_value;
+        }
+
+        if (new_value<last_value)
+        {
+            last_value -= acc*static_cast<double>(diff_us)/1000000.0f ;
+            last_value = last_value > new_value ? last_value : new_value;
+        }   
+
+        last_time = now;
+        return last_value;
+    }
+
+    double zero()
+    {
+        last_value = 0;
+        return last_value;
+    }
+};
 
 struct VelocityDS4Control {
+    inline constexpr static float lin_acc {0.4}; // m^2/s
+    inline constexpr static float ang_acc {3.0}; // rad^2/s
+    Smooth lin_smooth;
+    Smooth ang_smooth;
+
     float lin_mult { 0.50f };
-    float ang_mult { 1.10f };
+    float ang_mult { 1.60f };
 
     const ros::Publisher pub_vel;
+    geometry_msgs::Twist cmd_vel;
 
     ds4_driver::Status::ConstPtr last_msg;
 
     explicit VelocityDS4Control(ros::NodeHandle& nh)
-      : pub_vel { nh.advertise<geometry_msgs::Twist>("cmd_vel", 400) }
+      : lin_smooth { lin_acc }
+      , ang_smooth { ang_acc }
+      , pub_vel { nh.advertise<geometry_msgs::Twist>("cmd_vel", 400) }
     {}
 
     void update(const ds4_driver::Status::ConstPtr& msg)
@@ -23,17 +70,24 @@ struct VelocityDS4Control {
         publish_vel(msg);
     }
 
-    void publish_vel(const ds4_driver::Status::ConstPtr& msg) const
+    void publish_vel(const ds4_driver::Status::ConstPtr& msg)
     {
-        geometry_msgs::Twist cmd;
+        const float target_linear_vel { (msg->axis_r2 - msg->axis_l2)*lin_mult };
 
-        cmd.linear.x = (msg->axis_r2 - msg->axis_l2)*lin_mult ;
-        if (cmd.linear.x >= 0)
-            cmd.angular.z = msg->axis_left_x*ang_mult;
+        cmd_vel.linear.x = lin_smooth.call(target_linear_vel);
+        if (cmd_vel.linear.x >= 0)
+            cmd_vel.angular.z = ang_smooth.call(msg->axis_left_x*ang_mult);
         else
-            cmd.angular.z = msg->axis_left_x*ang_mult;
+            cmd_vel.angular.z = ang_smooth.call(-(msg->axis_left_x*ang_mult));
 
-        pub_vel.publish(cmd);
+        // Emergency stop
+        if (msg->button_circle >0)
+        {
+            cmd_vel.linear.x = lin_smooth.zero();
+            cmd_vel.angular.z = ang_smooth.zero();
+        }
+
+        pub_vel.publish(cmd_vel);
     }
 
     void update_multipliers(const ds4_driver::Status::ConstPtr& msg)
