@@ -14,6 +14,9 @@
   </node>
 
   <node pkg="uvone_robot_teleop" type="teleop_ds4" name="uvone_teleop_ds4"  output="screen">
+    <param name="acceleration/linear/x"  type="double" value="0.4" />
+    <param name="acceleration/angular/z" type="double" value="3.0" />
+
     <remap from="~cmd_vel" to="/cmd_vel_mux/input/teleop"/>
     <remap from="~cmd_light" to="/mobile_base/commands/light"/>
   </node>

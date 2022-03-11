@@ -45,8 +45,8 @@ struct Smooth {
 };
 
 struct VelocityDS4Control {
-    inline constexpr static float lin_acc {0.4}; // m^2/s
-    inline constexpr static float ang_acc {3.0}; // rad^2/s
+    static const double lin_acc_default; // m^2/s
+    static const double ang_acc_default; // rad^2/s
     Smooth lin_smooth;
     Smooth ang_smooth;
 
@@ -59,8 +59,8 @@ struct VelocityDS4Control {
     ds4_driver::Status::ConstPtr last_msg;
 
     explicit VelocityDS4Control(ros::NodeHandle& nh)
-      : lin_smooth { lin_acc }
-      , ang_smooth { ang_acc }
+      : lin_smooth { nh.param<double>("acceleration/linear/x", lin_acc_default) }
+      , ang_smooth { nh.param<double>("acceleration/angular/z", ang_acc_default) }
       , pub_vel { nh.advertise<geometry_msgs::Twist>("cmd_vel", 400) }
     {}
 
@@ -112,6 +112,9 @@ struct VelocityDS4Control {
     }
 
 };
+
+const double VelocityDS4Control::lin_acc_default {0.4}; // m^2/s
+const double VelocityDS4Control::ang_acc_default {3.0}; // rad^2/s
 
 struct LightControl {
     const ros::Publisher pub_light;
