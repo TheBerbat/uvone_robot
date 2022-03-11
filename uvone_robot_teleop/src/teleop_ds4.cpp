@@ -54,20 +54,59 @@ struct VelocityDS4Control {
     float ang_mult { 1.60f };
 
     const ros::Publisher pub_vel;
-    geometry_msgs::Twist cmd_vel;
+    const ros::Publisher pub_feedback;
 
+    geometry_msgs::Twist cmd_vel;
     ds4_driver::Status::ConstPtr last_msg;
+
+    bool publish_cmd_vel {false};
 
     explicit VelocityDS4Control(ros::NodeHandle& nh)
       : lin_smooth { nh.param<double>("acceleration/linear/x", lin_acc_default) }
       , ang_smooth { nh.param<double>("acceleration/angular/z", ang_acc_default) }
       , pub_vel { nh.advertise<geometry_msgs::Twist>("cmd_vel", 400) }
+      , pub_feedback { nh.advertise<ds4_driver::Feedback>("cmd_feedback", 400) }
     {}
 
     void update(const ds4_driver::Status::ConstPtr& msg)
     {
         update_multipliers(msg);
-        publish_vel(msg);
+        update_mode(msg);        
+
+        if (publish_cmd_vel || msg->button_circle >0)
+            publish_vel(msg);
+
+        last_msg = msg;
+    }
+
+    void update_mode(const ds4_driver::Status::ConstPtr& msg)
+    {
+        if (msg->button_r1 >0 && last_msg->button_r1 != msg->button_r1)
+        {
+            publish_cmd_vel = !publish_cmd_vel;
+            ROS_INFO("Cambiando el modo de publicacion");
+            ds4_driver::Feedback cmd_feedback;
+
+            cmd_feedback.set_led = true;
+            if (publish_cmd_vel)
+            {
+                cmd_feedback.led_r = 0.0f;
+                cmd_feedback.led_g = 1.0f;
+                cmd_feedback.led_b = 0.0f;
+            }
+            else
+            {
+                cmd_feedback.led_r = 1.0f;
+                cmd_feedback.led_g = 0.0f;
+                cmd_feedback.led_b = 0.0f;
+            }
+            cmd_feedback.set_rumble = true;
+            cmd_feedback.rumble_duration = 0.15f;
+            cmd_feedback.rumble_small = 0.1f;
+            cmd_feedback.rumble_big = 0.2f;
+
+            pub_feedback.publish(cmd_feedback);
+        }
     }
 
     void publish_vel(const ds4_driver::Status::ConstPtr& msg)
@@ -107,8 +146,6 @@ struct VelocityDS4Control {
             ang_mult *= 0.95f;
             ROS_INFO("Reduciendo velocidad angular un 5%%. ang_vel_mult=%.4f", ang_mult);
         }
-
-        last_msg = msg;
     }
 
 };
