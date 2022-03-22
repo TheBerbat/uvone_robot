@@ -6,6 +6,7 @@
 #include <kobuki_msgs/Led.h>
 
 #include <uvone_robot_msgs/LightCmd.h>
+#include <sensor_door_msgs/DoorSecurity.h>
 
 class DigitalNode_t
 {
@@ -166,17 +167,25 @@ struct LightNode_t {
     LampNode_t lamp_node;
     SoundNode_t sounds;
     ros::Subscriber cmds;
+    ros::Subscriber door_status_sub;
+    bool door_status = false;
 
     LightNode_t(ros::NodeHandle& nh)
       : lamp_node( nh )
       , sounds( nh )
       , cmds( nh.subscribe("cmd_light", 10, &LightNode_t::callback, this) )
+      , door_status_sub { nh.subscribe("sys_status", 10, &LightNode_t::callback_door_status, this) }
     {}
 
     void callback(const uvone_robot_msgs::LightCmd::ConstPtr& msg)
     {
         if (msg->inverter != 0)
-            lamp_node.set_inverter(LampNode_t::StateInverter::ENABLE);
+        {
+            if (door_status)
+                lamp_node.set_inverter(LampNode_t::StateInverter::ENABLE);
+            else
+                ROS_INFO("Door status is disabled, cannot turn on the lights!");
+        }
         else
             lamp_node.set_inverter(LampNode_t::StateInverter::DISABLE);
 
@@ -212,11 +221,21 @@ struct LightNode_t {
         else
             sounds.silent();
     }
+
+    void callback_door_status(const sensor_door_msgs::DoorSecurityConstPtr& msg)
+    {
+        if ( !msg->is_secure )
+        {
+            lamp_node.set_inverter(LampNode_t::StateInverter::DISABLE);
+            sounds.silent();
+        }
+        door_status = msg->is_secure;
+    }
 };
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "light_cmd_node");
-    ros::NodeHandle nh;
+    ros::NodeHandle nh("~");
 
     LightNode_t light(nh);
 

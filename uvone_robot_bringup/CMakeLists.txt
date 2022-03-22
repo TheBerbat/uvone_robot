@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   urdf
   xacro
   uvone_robot_msgs
+  sensor_door_msgs
 )
 
 ## System dependencies are found with CMake's conventions
