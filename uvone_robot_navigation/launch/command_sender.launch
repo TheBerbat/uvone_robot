@@ -1,0 +1,11 @@
+<launch>
+    <node name="command_sender" pkg="uvone_robot_navigation" type="command_sender" output="screen">
+        <param name="~cmd_filename" value="$(find uvone_robot_navigation)/paths/default.txt" />
+
+        <remap from="~move_base/result" to="/move_base/result" />
+        <remap from="~move_base/status" to="/move_base/status" />
+        <remap from="~move_base/feedback" to="/move_base/feedback" />
+        <remap from="~move_base/goal" to="/move_base/goal" />
+        <remap from="~move_base/cancel" to="/move_base/cancel" />
+    </node>
+</launch>
