@@ -11,7 +11,9 @@ find_package(catkin REQUIRED
   roscpp
   rospy
   std_msgs
-  actionlib)
+  actionlib
+  uvone_robot_msgs
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)

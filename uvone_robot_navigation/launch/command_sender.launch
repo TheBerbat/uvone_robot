@@ -7,5 +7,6 @@
         <remap from="~move_base/feedback" to="/move_base/feedback" />
         <remap from="~move_base/goal" to="/move_base/goal" />
         <remap from="~move_base/cancel" to="/move_base/cancel" />
+        <remap from="~cmd_light" to="/mobile_base/commands/light" />
     </node>
 </launch>
