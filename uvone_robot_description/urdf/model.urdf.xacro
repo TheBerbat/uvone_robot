@@ -46,6 +46,6 @@
 
 
   <!-- Camara astra -->
-  <xacro:sensor_astra parent="base_link" posz="1.238"/>  <!-- Primer escalon: posz=0.718 --> <!-- Segundo escalon: posz=1.358 -->
+  <xacro:sensor_astra parent="base_link" posz="1.320"/>  <!-- Primer escalon: posz=0.718 --> <!-- Segundo escalon: posz=1.358 -->
 
 </robot>
