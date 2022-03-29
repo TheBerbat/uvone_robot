@@ -3,6 +3,6 @@
   <include file="$(find uvone_robot_bringup)/launch/minimal.launch" />
   <include file="$(find uvone_robot_bringup)/launch/include/3d_sensor.launch.xml" />
   <!--include file="$(find uvone_robot_bringup)/launch/include/lidar_sensor.launch.xml" /-->
-  <include file="$(find uvone_robot_bringup)/launch/include/exefish_cameras.launch.xml" />
+  <include file="$(find uvone_robot_bringup)/launch/include/eyefish_cameras.launch.xml" />
 
 </launch>
