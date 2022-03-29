@@ -8,30 +8,27 @@
   <arg unless="$(arg localization)" name="args"  default="--delete_db_on_start"/>
   
   <!-- MAPPING -->
-    <node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="screen" args="$(arg args)">
-      <rosparam file="$(find uvone_robot_bringup)/param/rtabmap.yaml" command="load"/>
+  <node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="screen" args="$(arg args)">
+    <rosparam file="$(find uvone_robot_bringup)/param/rtabmap.yaml" command="load"/>
 
-      <!-- DATABASE PATH -->
-      <param name="database_path"       type="string" value="$(arg database)"/>
+    <!-- DATABASE PATH -->
+    <param name="database_path"       type="string" value="$(arg database)"/>
 
-      <!-- INPUTS -->
-      <remap from="rgb/image"       to="/camera/rgb/image_rect_color"/>
-      <remap from="depth/image"     to="/camera/depth_registered/image_raw"/>
-      <remap from="rgb/camera_info" to="/camera/rgb/camera_info"/>
+    <!-- INPUTS -->
+    <remap from="rgb/image"       to="/camera/rgb/image_rect_color"/>
+    <remap from="depth/image"     to="/camera/depth_registered/image_raw"/>
+    <remap from="rgb/camera_info" to="/camera/rgb/camera_info"/>
 
-        <!-- OUTPUTS -->
-      <remap from="grid_map" to="/map"/>
+    <!-- OUTPUTS -->
+    <remap from="grid_map" to="/map"/>
 
-      <!-- When sending goals on /rtabmap/goal topic, use actionlib to communicate with move_base --> 
-      <param name="use_action_for_goal" type="bool" value="true"/>
-      <remap from="move_base"            to="/move_base"/>
+    <!-- When sending goals on /rtabmap/goal topic, use actionlib to communicate with move_base --> 
+    <param name="use_action_for_goal" type="bool" value="true"/>
+    <remap from="move_base"            to="/move_base"/>
 
-      <!-- LOCALIZATION -->
-      <param     if="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="false"/>
-      <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
-      <param name="Mem/InitWMWithAllNodes" type="string" value="$(arg localization)"/> 
-    </node>
-   
-
-
+    <!-- LOCALIZATION -->
+    <param     if="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="false"/>
+    <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
+    <param name="Mem/InitWMWithAllNodes" type="string" value="$(arg localization)"/> 
+  </node>
 </launch>
