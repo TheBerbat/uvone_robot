@@ -8,7 +8,7 @@
   <arg unless="$(arg localization)" name="args"  default="--delete_db_on_start"/>
   
   <!-- MAPPING -->
-  <node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="screen" args="$(arg args)">
+  <node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="screen" args="$(arg args)" ns ="rtabmap">
     <rosparam file="$(find uvone_robot_bringup)/param/rtabmap.yaml" command="load"/>
 
     <!-- DATABASE PATH -->
@@ -31,4 +31,5 @@
     <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
     <param name="Mem/InitWMWithAllNodes" type="string" value="$(arg localization)"/> 
   </node>
+
 </launch>
