@@ -1,0 +1,66 @@
+
+
+frame_id: base_footprint
+map_negative_poses_ignored: true
+subscribe_depth: true
+subscribe_scan: false
+subscribe_scan_cloud: false
+wait_for_transform_duration: 0.2
+grid_size: 50
+
+
+Rtabmap:
+  PublishStats:  true
+  DetectionRate: 1.0
+  TimeThr:       0.0
+
+Mem:
+  RehearsalSimilarity: 0.30
+
+Kp:
+  MinDepth:  0.0 # m
+  MaxDepth:  3.0 # m
+
+RGBD:
+  Enabled:           true
+  LinearUpdate:       0.1
+  AngularUpdate:      0.1
+  LinearSpeedUpdate:  0.0
+  AngularSpeedUpdate: 0.0
+
+  ProximityBySpace:          true
+  OptimizeFromGraphEnd:      false
+  ProximityPathMaxNeighbors: 0
+
+Reg:
+  Strategy:   0
+  Force3DoF:  true
+
+Vis:
+  MaxDepth: 3.0
+  MinInliers: 30
+  InlierDistance: 0.1
+
+Grid:
+  Sensor:          1 # Depth
+  3D:              true
+  RangeMin:        0.0
+  RangeMax:        2.5
+
+  FootprintLength: 0.45
+  FootprintWidth:  0.45
+  FootprintHeight: 1.20
+  CellSize: 0.05
+
+  MaxObstacleHeight:   2.00
+  MaxGroundHeight:     0.02
+  NormalsSegmentation: true
+  GroundIsObstacle:   false
+
+Icp:
+  CorrespondenceRatio: 0.3
+
+GridGlobal:
+  FullUpdate: true
+  MinSize:    20
+  FootprintRadius: 0.20
