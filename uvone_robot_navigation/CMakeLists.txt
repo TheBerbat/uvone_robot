@@ -13,6 +13,7 @@ find_package(catkin REQUIRED
   std_msgs
   actionlib
   uvone_robot_msgs
+  sensor_door_msgs
 )
 
 ## System dependencies are found with CMake's conventions

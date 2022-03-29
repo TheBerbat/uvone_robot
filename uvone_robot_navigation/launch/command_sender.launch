@@ -8,5 +8,6 @@
         <remap from="~move_base/goal" to="/move_base/goal" />
         <remap from="~move_base/cancel" to="/move_base/cancel" />
         <remap from="~cmd_light" to="/mobile_base/commands/light" />
+        <remap from="~security" to="/sensor_door/security/sys_status" />
     </node>
 </launch>

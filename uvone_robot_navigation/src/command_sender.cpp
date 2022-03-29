@@ -6,6 +6,7 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 #include <uvone_robot_msgs/LightCmd.h>
+#include <sensor_door_msgs/DoorSecurity.h>
 
 #include <fstream>
 
@@ -18,12 +19,14 @@ struct CommandSender
     std::ifstream cmds;
     std::size_t cmd_line {};
     ros::Publisher pub_light;
+    ros::Subscriber sub_security;
 
     explicit CommandSender(ros::NodeHandle& nh)
       : ac{nh, "move_base", true}
       , cmd_filename{nh.param<std::string>("cmd_filename", "")}
       , cmds{cmd_filename}
       , pub_light{nh.advertise<uvone_robot_msgs::LightCmd>("cmd_light", 400)}
+      , sub_security{nh.subscribe("security", 1000, &CommandSender::security_callback, this)}
     {
         if (cmd_filename.empty())
         {
@@ -139,12 +142,12 @@ struct CommandSender
         }
         else if (type == "LEFT")
         {
-            ROS_INFO("Selecting none lamp");
+            ROS_INFO("Selecting left lamp");
             msg.lamp_selected = uvone_robot_msgs::LightCmd::SELECT_LEFT_LAMP;
         }
         else if (type == "RIGHT")
         {
-            ROS_INFO("Selecting none lamp");
+            ROS_INFO("Selecting right lamp");
             msg.lamp_selected = uvone_robot_msgs::LightCmd::SELECT_RIGHT_LAMP;
         }
         else
@@ -155,19 +158,33 @@ struct CommandSender
         pub_light.publish(msg);
         return true;
     }
+
+    void security_callback(const sensor_door_msgs::DoorSecurity::ConstPtr& msg)
+    {
+        //ROS_INFO("Security %d", msg->is_secure);
+        if (!msg->is_secure)
+        {
+            ROS_INFO("System is not secure. Closing node!");
+            ac.cancelAllGoals();
+            ros::shutdown();
+        }
+    }
 };
 
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "command_sender");
     ros::NodeHandle nh("~");
-
+    ros::AsyncSpinner spinner{2};
     CommandSender cmd{nh};
+
+    spinner.start();
 
     while( cmd.execute() );
 
     ROS_INFO("Finished commands");
-    ros::shutdown();
+
+    ros::waitForShutdown();
 
     return 0;
 }
