@@ -199,15 +199,15 @@ struct SystemControl {
     {
         if (msg->button_square && msg->button_square != last_msg->button_square)
         {
-            std_srvs::Empty msg;
-            srv_rearm.call(msg);
-            ROS_INFO("Calling rearm");
-        }
-        if (msg->button_triangle && msg->button_triangle != last_msg->button_triangle)
-        {
             sensor_door_msgs::CleanDisconnectedDevices msg;
             srv_clean.call(msg);
             ROS_INFO("Calling clean_disconnected devices");
+        }
+        if (msg->button_triangle && msg->button_triangle != last_msg->button_triangle)
+        {
+            std_srvs::Empty msg;
+            srv_rearm.call(msg);
+            ROS_INFO("Calling rearm");
         }
         last_msg = msg;
     }
