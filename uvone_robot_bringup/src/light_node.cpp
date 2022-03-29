@@ -163,18 +163,53 @@ public:
     void silent() { timer.stop(); }
 };
 
+struct LedStatus_t {
+    ros::Publisher pub_led;
+
+    LedStatus_t(ros::NodeHandle& nh)
+      : pub_led{ nh.advertise<kobuki_msgs::Led>("warning_led", 1000) }
+    {}
+
+    void red()
+    {
+        kobuki_msgs::Led msg;
+        msg.value = kobuki_msgs::Led::RED;
+        pub_led.publish(msg);
+    }
+    void orange()
+    {
+        kobuki_msgs::Led msg;
+        msg.value = kobuki_msgs::Led::ORANGE;
+        pub_led.publish(msg);
+    }
+    void green()
+    {
+        kobuki_msgs::Led msg;
+        msg.value = kobuki_msgs::Led::GREEN;
+        pub_led.publish(msg);
+    }
+    void black()
+    {
+        kobuki_msgs::Led msg;
+        msg.value = kobuki_msgs::Led::BLACK;
+        pub_led.publish(msg);
+    }
+};
+
 struct LightNode_t {
     LampNode_t lamp_node;
     SoundNode_t sounds;
     ros::Subscriber cmds;
     ros::Subscriber door_status_sub;
     bool door_status = false;
+    LedStatus_t led;
 
     LightNode_t(ros::NodeHandle& nh)
       : lamp_node( nh )
       , sounds( nh )
       , cmds( nh.subscribe("cmd_light", 10, &LightNode_t::callback, this) )
       , door_status_sub { nh.subscribe("sys_status", 10, &LightNode_t::callback_door_status, this) }
+      , led { nh }
     {}
 
     void callback(const uvone_robot_msgs::LightCmd::ConstPtr& msg)
@@ -227,9 +262,14 @@ struct LightNode_t {
         if ( !msg->is_secure )
         {
             lamp_node.set_inverter(LampNode_t::StateInverter::DISABLE);
+            led.red();
             sounds.silent();
         }
-        door_status = msg->is_secure;
+        else
+        {
+            led.green();
+        }
+        this->door_status = msg->is_secure;
     }
 };
 
