@@ -7,7 +7,7 @@ project(uvone_robot_teleop)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp geometry_msgs ds4_driver uvone_robot_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp geometry_msgs ds4_driver uvone_robot_msgs sensor_door_msgs std_srvs)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)

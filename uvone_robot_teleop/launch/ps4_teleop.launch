@@ -20,5 +20,6 @@
     <remap from="~cmd_vel" to="/cmd_vel_mux/input/teleop"/>
     <remap from="~cmd_light" to="/mobile_base/commands/light"/>
     <remap from="~cmd_feedback" to="/set_feedback" />
+    <remap from="~rearm" to="/xD" />
   </node>
 </launch>

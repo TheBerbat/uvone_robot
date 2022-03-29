@@ -2,7 +2,9 @@
 #include "geometry_msgs/Twist.h"
 #include "ds4_driver/Status.h"
 #include "ds4_driver/Feedback.h"
-#include "uvone_robot_msgs/LightCmd.h"
+#include <uvone_robot_msgs/LightCmd.h>
+#include <std_srvs/Empty.h>
+#include <sensor_door_msgs/CleanDisconnectedDevices.h>
 
 #include <chrono>
 
@@ -183,15 +185,45 @@ struct LightControl {
 
 };
 
+struct SystemControl {
+    ros::ServiceClient srv_rearm;
+    ros::ServiceClient srv_clean;
+    ds4_driver::Status::ConstPtr last_msg;
+
+    explicit SystemControl(ros::NodeHandle& nh)
+      : srv_rearm( nh.serviceClient<std_srvs::Empty>("/sensor_door/security/rearm"))
+      , srv_clean( nh.serviceClient<sensor_door_msgs::CleanDisconnectedDevices>("/sensor_door/door_server/clean_disconnected_devices"))
+    {}
+
+    void update(const ds4_driver::Status::ConstPtr& msg)
+    {
+        if (msg->button_square && msg->button_square != last_msg->button_square)
+        {
+            std_srvs::Empty msg;
+            srv_rearm.call(msg);
+            ROS_INFO("Calling rearm");
+        }
+        if (msg->button_triangle && msg->button_triangle != last_msg->button_triangle)
+        {
+            sensor_door_msgs::CleanDisconnectedDevices msg;
+            srv_clean.call(msg);
+            ROS_INFO("Calling clean_disconnected devices");
+        }
+        last_msg = msg;
+    }
+};
+
 struct RemoteControl {
     VelocityDS4Control vel_control;
     LightControl light_control;
+    SystemControl sys_control;
 
     const ros::Subscriber sub_ds4;
 
     explicit RemoteControl(ros::NodeHandle& nh)
       : vel_control { nh }
       , light_control { nh }
+      , sys_control { nh }
       , sub_ds4 { nh.subscribe<ds4_driver::Status>("status", 400, &RemoteControl::callback, this) }
     {}
 
@@ -201,7 +233,7 @@ struct RemoteControl {
             light_control.update(msg);
         else
             vel_control.update(msg);
-
+        sys_control.update(msg);
     }
 
 };
