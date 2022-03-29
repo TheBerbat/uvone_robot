@@ -115,39 +115,42 @@ struct CommandSender
 
     bool execute_light()
     {
-        int type;
+        std::string type;
         if(! (cmds >> type) )
         {
             ROS_ERROR("Error reading light instruction. Line %lu", cmd_line);
             return false;
         }
         static uvone_robot_msgs::LightCmd msg {};
-        ROS_INFO("Light instruction. Line %d", type);
-        switch (type)
+        ROS_INFO("Light instruction. Command", type);
+        if (type == "OFF") {
+            ROS_INFO("Turning off inverter");
+            msg.inverter = false;
+        }
+        else if (type == "ON")
         {
-            case 0:
-                ROS_INFO("Turning off inverter");
-                msg.inverter = false;
-                break;
-            case 1:
-                ROS_INFO("Turning on inverter");
-                msg.inverter = true;
-                break;
-            case 2:
-                ROS_INFO("Selecting none lamp");
-                msg.lamp_selected = uvone_robot_msgs::LightCmd::SELECT_NONE_LAMP;
-                break;
-            case 3:
-                ROS_INFO("Selecting right lamp");
-                msg.lamp_selected = uvone_robot_msgs::LightCmd::SELECT_RIGHT_LAMP;
-                break;
-            case 4:
-                ROS_INFO("Selecting left lamp");
-                msg.lamp_selected = uvone_robot_msgs::LightCmd::SELECT_LEFT_LAMP;
-                break;
-            default:
-                ROS_ERROR("Wrong light instruction. Line %lu", cmd_line);
-                return false;
+            ROS_INFO("Turning on inverter");
+            msg.inverter = true;
+        }
+        else if (type == "NONE")
+        {
+            ROS_INFO("Selecting none lamp");
+            msg.lamp_selected = uvone_robot_msgs::LightCmd::SELECT_NONE_LAMP;
+        }
+        else if (type == "LEFT")
+        {
+            ROS_INFO("Selecting none lamp");
+            msg.lamp_selected = uvone_robot_msgs::LightCmd::SELECT_LEFT_LAMP;
+        }
+        else if (type == "RIGHT")
+        {
+            ROS_INFO("Selecting none lamp");
+            msg.lamp_selected = uvone_robot_msgs::LightCmd::SELECT_RIGHT_LAMP;
+        }
+        else
+        {
+            ROS_ERROR("Wrong light instruction. Line %lu", cmd_line);
+            return false;
         }
         pub_light.publish(msg);
         return true;
