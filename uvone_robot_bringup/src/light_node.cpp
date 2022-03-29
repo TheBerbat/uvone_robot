@@ -259,14 +259,16 @@ struct LightNode_t {
 
     void callback_door_status(const sensor_door_msgs::DoorSecurityConstPtr& msg)
     {
-        if ( !msg->is_secure )
+        if ( !msg->is_secure && door_status != msg->is_secure)
         {
             lamp_node.set_inverter(LampNode_t::StateInverter::DISABLE);
             led.red();
             sounds.silent();
+            sounds.send(1);
         }
-        else
+        else if (door_status != msg->is_secure)
         {
+            sounds.send(0);
             led.green();
         }
         this->door_status = msg->is_secure;
