@@ -1,6 +1,7 @@
 <launch>
+    <arg name="file" default="$(find uvone_robot_navigation)/paths/default.txt" />
     <node name="command_sender" pkg="uvone_robot_navigation" type="command_sender" output="screen">
-        <param name="~cmd_filename" value="$(find uvone_robot_navigation)/paths/default.txt" />
+        <param name="~cmd_filename" value="$(arg file)" />
 
         <remap from="~move_base/result" to="/move_base/result" />
         <remap from="~move_base/status" to="/move_base/status" />
