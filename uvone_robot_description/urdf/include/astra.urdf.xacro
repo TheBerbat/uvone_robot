@@ -48,7 +48,7 @@
 
         <joint name="camera_rgb_joint" type="fixed">
         <origin xyz="0.012 0.010 ${posz}"
-                rpy="0 0.37 0"/>
+                rpy="0 0.40 0"/>
         <parent link="${parent}"/>
         <child link="camera_rgb_frame" />
         </joint>
