@@ -1,0 +1,14 @@
+<launch>
+  <!-- ARGS -->
+  <arg name="database"     default="tmp.db"/>
+
+  <!-- INCLUDES -->
+  <include file="$(find uvone_robot_bringup)/launch/all.launch" />
+  <include file="$(find uvone_robot_bringup)/launch/rtabmap.launch">
+    <arg name="database" value="$(arg database)"/>
+    <arg name="localization" value="true"/>
+  </include>
+  <include file="$(find uvone_robot_navigation)/launch/move_base.launch" />
+  <include file="$(find sensor_door)/launch/all.launch" />
+
+</launch>
