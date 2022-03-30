@@ -1,12 +1,11 @@
 
 
 frame_id: base_footprint
-map_negative_poses_ignored: true
+map_always_update: false
 subscribe_depth: true
 subscribe_scan: false
 subscribe_scan_cloud: false
 wait_for_transform_duration: 0.2
-grid_size: 50
 
 
 Rtabmap:
@@ -22,7 +21,6 @@ Kp:
   MaxDepth:  3.0 # m
 
 RGBD:
-  Enabled:           true
   LinearUpdate:       0.1
   AngularUpdate:      0.1
   LinearSpeedUpdate:  0.0
@@ -31,6 +29,10 @@ RGBD:
   ProximityBySpace:          true
   OptimizeFromGraphEnd:      false
   ProximityPathMaxNeighbors: 0
+
+odom_frame_id: odom
+odom_tf_linear_variance: 0.001
+odom_tf_angular_variance: 0.005
 
 Reg:
   Strategy:   0
@@ -50,10 +52,10 @@ Grid:
   FootprintLength: 0.45
   FootprintWidth:  0.45
   FootprintHeight: 1.20
-  CellSize: 0.05
+  CellSize: 0.03
 
   MaxObstacleHeight:   2.00
-  MaxGroundHeight:     0.02
+  MaxGroundHeight:     0.01
   NormalsSegmentation: true
   GroundIsObstacle:   false
 
@@ -62,5 +64,5 @@ Icp:
 
 GridGlobal:
   FullUpdate: true
-  MinSize:    20
+  MinSize:    50
   FootprintRadius: 0.20
