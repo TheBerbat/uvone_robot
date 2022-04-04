@@ -125,7 +125,7 @@ struct CommandSender
             return false;
         }
         static uvone_robot_msgs::LightCmd msg {};
-        ROS_INFO("Light instruction. Command", type);
+        ROS_INFO("Light instruction. Command %s", type.c_str());
         if (type == "OFF") {
             ROS_INFO("Turning off inverter");
             msg.inverter = false;
