@@ -1,8 +1,10 @@
 <launch>
-    <node name="create_trace_node" pkg="uvone_robot_navigation" type="create_trace.py" output="screen">
-        <param name="yaml/path" value="/home/rafaelm/catkin_ws/src/uvone_robot/uvone_robot_navigation/maps/" />
-        <param name="yaml/filename" value="octomap_grid.yaml" />
-        <param name="route/path" value="/home/rafaelm/catkin_ws/src/uvone_robot/uvone_robot_navigation/paths/" />
-        <param name="route/filename" value="ruta.txt" />
+    <arg name="file" default="$(find uvone_robot_navigation)/paths/default.txt" />
+    
+    <node name="command_writer" pkg="uvone_robot_navigation" type="command_writer" output="screen">
+        <param name="path_filename" value="$(arg file)" />
+
+        <!-- <remap from="~feedback" to=""/> -->
+        <remap from="~goal" to="/move_base_simple/goal"/> -->
     </node>
 </launch>
