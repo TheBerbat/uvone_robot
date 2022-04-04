@@ -14,6 +14,7 @@ find_package(catkin REQUIRED
   actionlib
   uvone_robot_msgs
   sensor_door_msgs
+  roslib
 )
 
 ## System dependencies are found with CMake's conventions

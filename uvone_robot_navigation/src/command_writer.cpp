@@ -42,7 +42,7 @@ struct FileWriter
 
     void open_file(ros::NodeHandle& nh)
     {
-        std::string filename_abs {ros::package::getPath("mi_paquete")+"/path/default.txt"};
+        std::string filename_abs {ros::package::getPath("uvone_robot_navigation")+"/paths/default.txt"};
         if(!nh.getParam("path_filename", filename_abs))
         {
             ROS_WARN("No filename path. Default is: %s", filename_abs.c_str());
