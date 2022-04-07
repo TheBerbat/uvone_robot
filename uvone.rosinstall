@@ -1,2 +1,9 @@
-- git: {local-name: kobuki, uri: 'https://github.com/yujinrobot/kobuki.git', version: melodic}
-- git: {local-name: kobuki_desktop, uri: 'https://github.com/yujinrobot/kobuki_desktop.git', version: melodic}
+- git: {local-name: uvone_robot,        uri: 'https://github.com/TheBerbat/uvone_robot.git',                 version: trunk}
+- git: {local-name: sensor_door,        uri: 'https://github.com/TheBerbat/sensor_door.git',                 version: trunk}
+- git: {local-name: ds4_driver,         uri: 'https://github.com/naoki-mizuno/ds4_driver.git',               version: melodic-devel}
+- git: {local-name: kobuki_msgs,        uri: 'https://github.com/yujinrobot/kobuki_msgs.git',                version: melodic}
+- git: {local-name: kobuki_desktop,     uri: 'https://github.com/yujinrobot/kobuki_desktop.git',             version: melodic}
+- git: {local-name: kobuki,             uri: 'https://github.com/yujinrobot/kobuki.git',                     version: melodic} 
+- git: {local-name: rocon_app_platform, uri: 'https://github.com/robotics-in-concert/rocon_app_platform.git', version: devel} 
+- git: {local-name: rocon_multimaster,  uri: 'https://github.com/robotics-in-concert/rocon_multimaster.git',  version: devel} 
+- git: {local-name: zeroconf_avahi_suite, uri: 'https://github.com/stonier/zeroconf_avahi_suite.git',        version: indigo}
