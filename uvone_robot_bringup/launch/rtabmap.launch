@@ -1,7 +1,13 @@
 <launch>
   <!-- ARGS -->
-  <arg name="database"     default="tmp.db"/>
-  <arg name="localization"      default="false"/>
+  <arg name="database"        default="tmp.db"/>
+  <arg name="localization"    default="false"/>
+  
+  <arg name="simulation"      default="false"/>
+  <arg     if="$(arg simulation)" name="rgb_image"  default="/camera/rgb/image_raw"/>
+  <arg unless="$(arg simulation)" name="rgb_image"  default="/camera/rgb/image_rect_color"/>
+  <arg     if="$(arg simulation)" name="depth_image"  default="/camera/depth/image_raw"/>
+  <arg unless="$(arg simulation)" name="depth_image"  default="/camera/depth_registered/image_raw"/>
 
   <!-- OTHERS ARGS -->
   <arg     if="$(arg localization)" name="args"  default=""/>
@@ -15,8 +21,8 @@
     <param name="database_path"       type="string" value="$(arg database)"/>
 
     <!-- INPUTS -->
-    <remap from="rgb/image"       to="/camera/rgb/image_rect_color"/>
-    <remap from="depth/image"     to="/camera/depth_registered/image_raw"/>
+    <remap from="rgb/image"       to="$(arg rgb_image)"/>
+    <remap from="depth/image"     to="$(arg depth_image)"/>
     <remap from="rgb/camera_info" to="/camera/rgb/camera_info"/>
 
     <!-- OUTPUTS -->
