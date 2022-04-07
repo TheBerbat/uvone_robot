@@ -34,7 +34,7 @@
   <link name="estructura_link">
     <visual>
       <geometry>
-        <mesh filename="package://uvone_robot_description/meshes/Alpha.STL" scale="0.0010 0.0010 0.0010"/>
+        <mesh filename="package://uvone_robot_description/meshes/structure.stl" scale="0.0010 0.0010 0.0010"/>
       </geometry>
       <origin rpy="1.570796272 0 1.570796272" xyz="-0.355 -0.235 0.055" />
       <material name="black">
