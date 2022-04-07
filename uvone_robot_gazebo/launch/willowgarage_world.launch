@@ -18,10 +18,8 @@
     <param name="publish_frequency" type="double" value="30.0"/>
   </node>
 
-  <include file="$(find uvone_robot_bringup)/launch/mobile_base.launch.xml" />
+  <include file="$(find uvone_robot_bringup)/launch/include/mobile_base.launch.xml" />
 
-
-  <include file="$(find uvone_robot_bringup)/launch/scan_filter.launch" />
-
+  <include file="$(find uvone_robot_bringup)/launch/include/scan_filter.launch.xml" />
 
 </launch>
