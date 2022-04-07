@@ -30,7 +30,7 @@
 import rospy
 
 from geometry_msgs.msg import Twist
-from uvone_robot_bringup.msg import LightCmd
+from uvone_robot_msgs.msg import LightCmd
 
 import sys, select, termios, tty
 
