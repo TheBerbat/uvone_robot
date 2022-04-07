@@ -1,19 +1,22 @@
 <?xml version="1.0"?>
 <package format="2">
-    <name>uvone_robot_msgs</name>
-    <version>1.0.0</version>
-    <description>
-        This package contains messages for uvone_robot.
-    </description>
-    <author email="theverbat@gmail.com">Rafael M</author>
-    <maintainer email="theverbat@gmail.com">Rafael M</maintainer>
-    <license>BSD</license>
+  <name>uvone_robot_msgs</name>
+  <version>1.0.0</version>
+  <description>This package contains messages for uvone_robot.</description>
 
-    <buildtool_depend>catkin</buildtool_depend>
+  <maintainer email="theverbat@gmail.com">Rafael Martin</maintainer>
 
-    <build_depend>std_msgs</build_depend>
-    <exec_depend>std_msgs</exec_depend>
+  <license>GPLv2</license>
 
-    <build_depend>message_generation</build_depend>
-    <exec_depend>message_runtime</exec_depend>
+  <url type="website">automaticayrobotica.es</url>
+
+  <author email="theverbat@gmail.com">Rafael Martin</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>std_msgs</build_depend>
+  <exec_depend>std_msgs</exec_depend>
+
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
 </package>
