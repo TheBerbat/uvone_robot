@@ -3,56 +3,41 @@ _Proyecto impulsado por ETSII-CR (Escuela Superior de Ingeniería Industrial - C
 
 Se trata de un robot contruido sobre la base _kobuki_ y montados unos tubos _UVC_ que desinfectarán las áreas proximas.
 
-Se usará ROS-MELODIC para la realización de este proyecto, aunque se ha tenido que adaptar los paquetes de kobuki, ya que no están incluidos en apt.
+Se usará ROS-MELODIC para la realización de este proyecto.
 
 ## Comenzando 🚀
 
 ### Prerequisitos
-Para comenzar es necesario instalar los paquetes necesarios para utilizar la kobuki (base movil) y poder aportar movilidad al robot.
+asdf
 
-Es tan sencillo como crear un _workspace_ nuevo:
+### Comandos para la instalacion de los paquetes necesarios
+Creamos un directorio de trabajo:
 ```
-$ mkdir -p ~/kobuki_ws/src/
-$ cd ~/kobuki_ws
+$ mkdir -p ~/catkin_ws/src/
+```
+
+Nos movemos dentro del directorio, lo compilamos y lo añadimos al bashrc:
+```
+$ cd ~/catkin_ws/
 $ catkin_make
+$ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 ```
 
-Ahora descargamos todos los paquetes necesarios en la carpeta _src_:
+Descargamos los paquetes necesarios (los que no estan incluidos por defecto con apt)
 ```
-$ cd ~/kobuki_ws/src/
-
-$ git clone -b melodic https://github.com/yujinrobot/kobuki_desktop
-$ git clone -b melodic https://github.com/yujinrobot/kobuki
-$ git clone -b melodic https://github.com/yujinrobot/kobuki_msgs
-$ git clone https://github.com/yujinrobot/yujin_ocs
-$ git clone -b melodic https://github.com/yujinrobot/kobuki_core
-$ git clone https://github.com/yujinrobot/yocs_msgs
+$ rosinstall ~/catkin_ws/src https://raw.githubusercontent.com/TheBerbat/uvone_robot/devel/uvone.rosinstall
+```
+Resolvemos las dependencias:
+```
+$ rosdep install --from-paths ~/catkin_ws/src --ignore-src -r -y
 ```
 
-Ahora instalamos los paquetes necesarios:
+El mensaje devuelto deverá ser:
 ```
-$ sudo apt install ros-melodic-ecl-* libftdi-dev libusb-dev ros-melodic-ar-track-alvar ros-melodic-navigation pyqt5-dev-tools ros-melodic-laser-filters
+#All required rosdeps installed successfully
 ```
+En caso contrario deberá abrirse un issue con la mayor aportación de información posible.
 
-Comprobamos que es capaz de compilar los paquetes de kobuki:
-```
-$ cd ~/kobuki_ws/
-$ catkin_make
-```
-
-Añadimos el workspace para que ROS sea capaz de encontrarlos, al _.bashrc_:
-```
-$ source ~/kobuki_ws/devel/setup.bash
-```
-
-### Instalacion
-Asumiendo que los prerequisitos se cumplen, comenzamos a instalar este paquete. Se ha creado otro workspace por cuestion de orden, pero puede descargarse en el primer _workspace_ creado.
-```
-$ mkdir -p ~/uvone_ws/src
-$ catkin_make
-$ cd ~/uvone_ws/src/
-$ git clone git@github.com:TheBerbat/uvone_robot.git
-```
 
 ## Fotos
 Actualmente el README.md se encuentra en fase de construcción...
