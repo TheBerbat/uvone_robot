@@ -1,4 +1,4 @@
-- git: {local-name: uvone_robot,          uri: 'https://github.com/TheBerbat/uvone_robot.git',                  version: trunk}
+- git: {local-name: uvone_robot,          uri: 'https://github.com/TheBerbat/uvone_robot.git',                  version: devel}
 - git: {local-name: sensor_door,          uri: 'https://github.com/TheBerbat/sensor_door.git',                  version: trunk}
 - git: {local-name: ds4_driver,           uri: 'https://github.com/naoki-mizuno/ds4_driver.git',                version: melodic-devel}
 - git: {local-name: kobuki_msgs,          uri: 'https://github.com/yujinrobot/kobuki_msgs.git',                 version: melodic}
